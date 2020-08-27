@@ -2,12 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ProductApiSaver;
 use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class ProductController extends Controller
 {
+     /**
+     * Save or update product from API result.
+     *
+     * @param  Request  $request
+     * @return Response
+     */
+    public function storeFromApi(Request $request, ProductApiSaver $saver)
+    {
+        if (!$request->id) {
+            abort(404);
+        }
+
+        $product = $saver->saveByApiId($request->id);
+
+        return response()->json([
+            'message' => $product->wasRecentlyCreated ? 'created' : 'updated'
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *

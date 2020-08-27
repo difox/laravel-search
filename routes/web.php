@@ -22,3 +22,5 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/search', 'SearchController@search');
+
+Route::get('/addProductFromApi', 'ProductController@storeFromApi');

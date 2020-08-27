@@ -11,24 +11,93 @@ class OneFoodApiFinder
 {
     private $api;
 
+    /**
+     * Found products list
+     * 
+     * @var Illuminate\Support\Collection
+     */
+    private $products = [];
+
+    /**
+     * Current API page
+     * 
+     * @var int
+     */
+    private $currentPage = 1;
+
+    /**
+     * Total API finded items
+     * 
+     * @var int
+     */
+    private $totalCount;
+
+    /**
+     * Page size
+     * 
+     * @var int
+     */
+    private $pageSize = 20;
+
     public function __construct(OneFoodApi $api)
     {
         $this->api = $api;
     }
 
+    public function getProducts()
+    {
+        return $this->products;
+    }
+
+    public function getPageSize()
+    {
+        return $this->pageSize;
+    }
+
+    public function setPageSize($pageSize)
+    {
+        $this->pageSize = $pageSize;
+    }
+
+    public function getCurrentPage()
+    {
+        return $this->currentPage;
+    }
+
+    public function setCurrentPage($page)
+    {
+        $this->currentPage = $page;
+    }
+
+    public function getTotalCount()
+    {
+        return $this->totalCount;
+    }
+
     /**
-     * Find items by product name
+     * Search itemsfor words present in the product name, generic name, brands,
+     * categories, origins and labels
      * 
      * @param string|null $search
      * @return Collection
      */
-    public function findByProductName(?string $search)
+    public function search(?string $search)
     {
-        // Search API results by product name
+        // Search API results
         if ($search) {
-            $items = $this->api
+            $response = $this->api->makeSearchRequest($search, $this->currentPage, $this->pageSize)
+                ->json();
+
+            $this->parseResponse($response);
         }
 
-        return new Collection();
+        return $this->getProducts();
+    }
+
+    public function parseResponse($response)
+    {
+        $this->products = collect($response['products']);
+        $this->currentPage = $response['page'];
+        $this->totalCount = $response['count'];
     }
 }

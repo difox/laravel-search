@@ -20,6 +20,31 @@ class ProductFinder
      */
     public function find(?string $productName)
     {
-        return $this->driver->findByProductName($productName);
+        return $this->driver->search($productName);
+    }
+
+    public function getTotalCount()
+    {
+        return $this->driver->getTotalCount();
+    }
+
+    public function getPageSize()
+    {
+        return $this->driver->getPageSize();
+    }
+
+    public function setPageSize($pageSize)
+    {
+        return $this->driver->setPageSize($pageSize);
+    }
+
+    public function getCurrentPage()
+    {
+        return $this->driver->getCurrentPage();
+    }
+
+    public function setCurrentPage($page)
+    {
+        $this->driver->setCurrentPage($page);
     }
 }
